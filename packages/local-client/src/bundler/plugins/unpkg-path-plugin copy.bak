@@ -1,0 +1,71 @@
+import * as esbuild from "esbuild-wasm";
+import axios from "axios";
+import localForage from "localforage";
+
+//create cached db in an environment like localStorage -- reverts to localStorage if not availble in the current browser
+const fileCache = localForage.createInstance({
+  name: "filecache",
+});
+
+export const unpkgPathPlugin = (inputCode: string) => {
+  return {
+    name: "unpkg-path-plugin",
+    setup(build: esbuild.PluginBuild) {
+      build.onResolve({ filter: /.*/ }, async (args: any) => {
+        console.log("onResolve", args);
+        if (args.path === "index.js") {
+          return { path: args.path, namespace: "a" };
+        }
+        //if there is an import inside the imported package
+        if (args.path.includes("./") || args.path.includes("../")) {
+          return {
+            namespace: "a",
+            //importer in this case will be https://unpkg.com/${args.path}/ --- but does not work for nested packages
+            //resolveDir comes out of request from onLoad -- will work for nested packages
+            //.href makes it a string
+            path: new URL(args.path, `https://unpkg.com${args.resolveDir}/`)
+              .href,
+          };
+        }
+
+        return {
+          namespace: "a",
+          path: `https://unpkg.com/${args.path}`,
+        };
+      });
+
+      build.onLoad({ filter: /.*/ }, async (args: any) => {
+        console.log("onLoad", args);
+
+        if (args.path === "index.js") {
+          return {
+            loader: "jsx",
+            contents: inputCode,
+          };
+        }
+        //check to see if we already fetched this file -- and if it is in the cache
+        const cachedResult = await fileCache.getItem<esbuild.OnLoadResult>(
+          args.path
+        );
+        //if it is - return immediately
+        if (cachedResult) {
+          return cachedResult;
+        }
+        //fetch package from npm
+        const { data, request } = await axios.get(args.path);
+
+        const result: esbuild.OnLoadResult = {
+          loader: "jsx",
+          contents: data,
+          //where we found the nested package ----- ('./',...)makes it so the index.js is taken out of the response
+          resolveDir: new URL("./", request.responseURL).pathname,
+        };
+        //store response in cache
+        //1st arg is the key value stored in db - 2nd arg is the data stored
+        await fileCache.setItem(args.path, result);
+
+        return result;
+      });
+    },
+  };
+};
