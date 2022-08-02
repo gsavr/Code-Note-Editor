@@ -11,7 +11,5 @@
 
 ## Functionality
 
-- Text Editor
-  ![Text Editor](/packages/cli/images/text_editor.png)
-- Code Editor
-  ![Code Editor](/packages/cli/images/code_editor.png)
+- Text Editor: Just click on + Text, then open the editor
+- Code Editor: Just click on + Code, then start typing in code, editor automatically bundles and runs React App so you do not have to import React, just use the show() fn to display your code on the preview window.
