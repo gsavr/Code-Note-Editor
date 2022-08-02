@@ -12,6 +12,6 @@
 ## Functionality
 
 - Text Editor
-  ![Text Editor](/images/text_editor.png)
+  ![Text Editor](/packages/cli/images/text_editor.png)
 - Code Editor
-  ![Code Editor](/images/code_editor.png)
+  ![Code Editor](/packages/cli/images/code_editor.png)
