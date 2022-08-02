@@ -1,6 +1,6 @@
 {
   "name": "jsnote-gs",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "publishConfig": {
     "access": "public"
@@ -17,10 +17,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@jsnote-gs/local-client": "^1.0.0"
+    "@jsnote-gs/local-client": "^1.0.1"
   },
   "devDependencies": {
-    "@jsnote-gs/local-api": "^1.0.0",
+    "@jsnote-gs/local-api": "^1.0.1",
     "@types/node": "^18.6.1",
     "commander": "^9.4.0",
     "esbuild": "0.8.26",
