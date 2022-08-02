@@ -1,1 +1,1 @@
-[{"content":"","type":"code","id":"wu5zu"}]
+[{"content":"const a = \"bundled code\";\nshow(a);","type":"code","id":"yvchx"},{"content":"Hello","type":"text","id":"ntkyq"}]
